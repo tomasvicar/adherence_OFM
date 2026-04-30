@@ -10,7 +10,7 @@ Data jsou v `../data/2026_4_22_clonky_a_test_mereni`.
 uv run --with h5py --with numpy --with pillow python h5_to_png.py
 ```
 
-`h5_to_png_small.py` totéž, ale udělá z každého obrázku 3 náhodné výřezy 1/5 × 1/5 (≈328×246 px), všechny dohromady promíchá (seed 43) a uloží do `segmetnace_labeling_small`. Na menších výřezech se značí přesněji.
+`h5_to_png_small.py` totéž, ale udělá z každého obrázku 3 náhodné čtvercové výřezy 360×360 px, všechny dohromady promíchá (seed 43) a uloží do `segmetnace_labeling_small`. Na menších výřezech se značí přesněji.
 
 ```bash
 uv run --with h5py --with numpy --with pillow python h5_to_png_small.py

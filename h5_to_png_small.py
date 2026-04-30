@@ -12,7 +12,7 @@ OUT_DIR = BASE / "segmetnace_labeling_small"
 MAPPING_FILE = OUT_DIR / "mapping.json"
 SEED = 43
 CROPS_PER_IMAGE = 3
-CROP_FRACTION = 1 / 5
+CROP_SIZE = 360
 
 
 def load_image(h5_path: Path) -> np.ndarray:
@@ -39,8 +39,11 @@ def main() -> None:
         for h5_file in sorted(snap_dir.glob("*.h5")):
             img = load_image(h5_file)
             h, w = img.shape[:2]
-            ch = max(1, int(round(h * CROP_FRACTION)))
-            cw = max(1, int(round(w * CROP_FRACTION)))
+            if h < CROP_SIZE or w < CROP_SIZE:
+                raise ValueError(
+                    f"{h5_file.name}: image {h}x{w} smaller than crop {CROP_SIZE}"
+                )
+            ch = cw = CROP_SIZE
             rel = h5_file.relative_to(BASE).as_posix()
             for k in range(CROPS_PER_IMAGE):
                 y = rng.randint(0, h - ch)
@@ -78,7 +81,7 @@ def main() -> None:
             {
                 "seed": SEED,
                 "crops_per_image": CROPS_PER_IMAGE,
-                "crop_fraction": CROP_FRACTION,
+                "crop_size": CROP_SIZE,
                 "base_dir": str(BASE),
                 "files": mapping,
             },
