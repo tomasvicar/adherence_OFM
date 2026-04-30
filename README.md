@@ -12,18 +12,32 @@ uv run --with h5py --with numpy --with pillow python h5_to_png.py
 
 ### Cellpose
 
-Instalace (jednou):
+Instalace (jednou) — **GPU verze, doporučená** (PyTorch s CUDA 12.8):
+
+```bash
+uv tool install --link-mode=copy --index https://download.pytorch.org/whl/cu128 --index-strategy unsafe-best-match 'cellpose[gui]'
+```
+
+Pokud GPU nemáš, stačí CPU verze:
 
 ```bash
 uv tool install --link-mode=copy 'cellpose[gui]'
 ```
 
-Spuštění GUI ve složce s PNG (dva řádky, funguje v PowerShellu i bashi):
+Po instalaci je `cellpose` přímo na PATH. Spuštění GUI ve složce s PNG (dva řádky, funguje v PowerShellu i bashi):
 
 ```
 cd ../data/2026_4_22_clonky_a_test_mereni/segmetnace_labeling
-uv tool run --link-mode=copy cellpose
+cellpose
 ```
+
+Ověření, že cellpose běží na GPU:
+
+```bash
+cellpose --version
+```
+
+Mělo by vypsat `torch version: 2.11.0+cu128` (GPU) místo `+cpu`. V GUI pak zaškrtni *use GPU*.
 
 Pozn.: `--link-mode=copy` obchází chybu *"failed to hardlink"* / *"cloud operation cannot be performed on a file with incompatible hardlinks"*, která se objeví, když uv cache (`%LOCALAPPDATA%\uv\cache`) a cíl jsou na různých svazcích / OneDrive. Alternativně lze nastavit jednou:
 
@@ -32,5 +46,7 @@ Pozn.: `--link-mode=copy` obchází chybu *"failed to hardlink"* / *"cloud opera
 ```
 
 (po nastavení znovu otevři terminál, pak už `--link-mode=copy` přidávat nemusíš).
+
+Přepnutí mezi CPU/GPU buildem: `uv tool uninstall cellpose` a znovu spustit příslušný `uv tool install` výše.
 
 Detaily a kontext rozhodnutí: [`docs/segmentation_labeling.md`](docs/segmentation_labeling.md).
